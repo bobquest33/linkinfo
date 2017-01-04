@@ -6,11 +6,13 @@ import (
 	"testing"
 )
 
+const usaTodayUrl = "http://www.usatoday.com/story/news/world/2017/01/03/donald-trump-north-korea-nuclear-options/96121898/"
+
 func TestLinkInfo(t *testing.T) {
 	if htmlData, err := ioutil.ReadFile("./examples/usa_today.html"); err != nil {
 		t.Error("Expected file", "./examples/usa_today.html")
 	} else {
-		rawUrl := "http://www.usatoday.com/story/news/world/2017/01/03/donald-trump-north-korea-nuclear-options/96121898/"
+		rawUrl := usaTodayUrl
 		linkInfo, _ := ParseLinkInfo(htmlData, rawUrl)
 
 		expect := func(key, actual, expected string) {
