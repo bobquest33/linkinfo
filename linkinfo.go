@@ -17,6 +17,7 @@ type LinkInfo struct {
 	Description  string
 	SiteName     string
 	ImageUrls    []string
+	Videos       []VideoInfo
 }
 
 func ParseLinkInfo(htmlData []byte, rawUrl string) (*LinkInfo, error) {
@@ -63,6 +64,19 @@ func ParseLinkInfo(htmlData []byte, rawUrl string) (*LinkInfo, error) {
 		ll.ImageUrls = append(ll.ImageUrls, meta["og:image:url"])
 		for n := 2; meta["og:image:url"+strconv.Itoa(n)] != ""; n++ {
 			ll.ImageUrls = append(ll.ImageUrls, meta["og:image:url"+strconv.Itoa(n)])
+		}
+	}
+
+	if meta["og:video:url"] != "" {
+		ll.Videos = []VideoInfo{VideoInfo{VideoUrl: meta["og:video:url"]}}
+		if meta["og:video:width"] != "" {
+			ll.Videos[0].Width, _ = strconv.Atoi(meta["og:video:width"])
+		}
+		if meta["og:video:height"] != "" {
+			ll.Videos[0].Height, _ = strconv.Atoi(meta["og:video:height"])
+		}
+		if meta["og:video:type"] != "" {
+			ll.Videos[0].MimeType = strings.ToLower(meta["og:video:type"])
 		}
 	}
 	return ll, nil

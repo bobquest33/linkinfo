@@ -16,8 +16,13 @@ func getUrlMimeType(url string) (string, error) {
 	} else {
 		defer resp.Body.Close()
 		if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-			return strings.Trim(strings.Split(resp.Header.Get("Content-Type"), ";")[0], " "), nil
+			return getMimeTypeFromResponse(resp.Header), nil
 		}
 	}
 	return "", nil
+}
+
+func getMimeTypeFromResponse(header http.Header) string {
+	ct := header.Get("Content-Type")
+	return strings.ToLower(strings.Trim(strings.Split(ct, ";")[0], " "))
 }
