@@ -33,7 +33,14 @@ func GetInfo(url, tmpDir string) (*Info, error) {
 	}
 
 	if mimeType == "text/html" {
-		if resp, err := http.Get(url); err != nil {
+		client := &http.Client{}
+
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Add("User-Agent", "facebookexternalhit/1.1")
+		if resp, err := client.Do(req); err != nil {
 			return nil, err
 		} else {
 			defer resp.Body.Close()

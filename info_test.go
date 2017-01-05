@@ -10,11 +10,13 @@ func testLink(url string, expected interface{}, t *testing.T) {
 	if info, err := GetInfo(url, ""); err != nil {
 		t.Error("Errored out", err)
 	} else {
-		for i, _ := range info.Images {
-			os.Remove(info.Images[i].LocalTempFilePath)
-			info.Images[i].LocalTempFilePath = ""
+		if info != nil && info.Images != nil {
+			for i, _ := range info.Images {
+				os.Remove(info.Images[i].LocalTempFilePath)
+				info.Images[i].LocalTempFilePath = ""
+			}
 		}
-		if !reflect.DeepEqual(*info, expected) {
+		if info == nil || !reflect.DeepEqual(*info, expected) {
 			t.Errorf("Expected %#v but got %#v", expected, info)
 		}
 	}
@@ -22,6 +24,7 @@ func testLink(url string, expected interface{}, t *testing.T) {
 
 const ytUrl = "https://www.youtube.com/watch?v=NkHg6cxrRSc"
 const cloudlyUrl = "https://cl.ly/2o0x0s13462p"
+const linkedinUrl = "https://www.linkedin.com/in/reidhoffman"
 
 func TestInfo(t *testing.T) {
 	testCases := map[string]Info{}
@@ -30,6 +33,7 @@ func TestInfo(t *testing.T) {
 	testCaseNames["UsaToday"] = usaTodayUrl
 	testCaseNames["Youtube"] = ytUrl
 	testCaseNames["Cloudly"] = cloudlyUrl
+	testCaseNames["Linkedin"] = linkedinUrl
 
 	testCases[usaTodayUrl] = Info{
 		CanonicalUrl: usaTodayUrl,
@@ -74,6 +78,21 @@ func TestInfo(t *testing.T) {
 				MimeType: "image/png",
 				Width:    588,
 				Height:   606,
+			},
+		},
+	}
+
+	testCases[linkedinUrl] = Info{
+		CanonicalUrl: "https://www.linkedin.com/in/reidhoffman/de",
+		Title:        "Reid Hoffman | LinkedIn",
+		Description:  "View Reid Hoffman’s professional profile on LinkedIn. LinkedIn is the world's largest business network, helping professionals like Reid Hoffman discover inside connections to recommended job candidates, industry experts, and business partners.",
+		SiteName:     "LINKEDIN",
+		Images: []ImageInfo{
+			ImageInfo{
+				ImageUrl: "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/5/000/1bd/26f/349c10e.jpg",
+				MimeType: "image/jpeg",
+				Width:    200,
+				Height:   200,
 			},
 		},
 	}

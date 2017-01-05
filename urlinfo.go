@@ -15,9 +15,7 @@ func getUrlMimeType(url string) (string, error) {
 		return "", err
 	} else {
 		defer resp.Body.Close()
-		if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-			return getMimeTypeFromResponse(resp.Header), nil
-		}
+		return getMimeTypeFromResponse(resp.Header), nil
 	}
 	return "", nil
 }
